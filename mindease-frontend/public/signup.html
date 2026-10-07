@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MindEase — Sign Up</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <style>
+    :root {
+      --me-bg: #FBF8F3;
+      --me-primary: #8FA68E;
+      --me-text: #2E2E2E;
+      --me-border: #E8E2D8;
+    }
+    body { background-color: var(--me-bg); color: var(--me-text); font-family: system-ui, -apple-system, sans-serif; }
+    .me-card { background: #fff; border: 1px solid var(--me-border); border-radius: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+    .btn-me-primary { background-color: var(--me-primary); border-color: var(--me-primary); color: #fff; font-weight: 500; border-radius: 8px; }
+    .btn-me-primary:hover { background-color: #7b947a; color: #fff; }
+  </style>
+</head>
+<body class="py-5">
+  <div class="container" style="max-width: 480px;">
+    <div class="text-center mb-4">
+      <span style="font-size: 2.5rem;">🍃</span>
+      <h1 class="h3 mt-2">Begin your journey</h1>
+      <p class="text-muted small">A calm, private place that listens before it charts.</p>
+    </div>
+
+    <div class="me-card p-4 p-md-5">
+      <form id="signup-form">
+        <div class="mb-3">
+          <label class="form-label small text-muted">Full Name</label>
+          <input type="text" id="name" class="form-control" placeholder="e.g. Alex Sharma" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-muted">Email ID</label>
+          <input type="email" id="email" class="form-control" placeholder="alex@example.com" required />
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-5">
+            <label class="form-label small text-muted">Age (13–120)</label>
+            <input type="number" id="age" min="13" max="120" class="form-control" placeholder="22" required />
+          </div>
+          <div class="col-7">
+            <label class="form-label small text-muted">Occupation / Profession</label>
+            <input type="text" id="profession" class="form-control" placeholder="Student" required />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-me-primary w-100 py-2">Create your space →</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function getAgeGroup(age) {
+      const num = parseInt(age, 10);
+      if (num < 13) return "child";
+      if (num <= 17) return "teen";
+      if (num <= 25) return "young_adult";
+      if (num <= 59) return "adult";
+      return "senior";
+    }
+
+    document.getElementById("signup-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const age = parseInt(document.getElementById("age").value, 10);
+      const profession = document.getElementById("profession").value.trim();
+      const ageGroup = getAgeGroup(age);
+
+      const user = { name, email, age, profession, ageGroup };
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      window.location.replace("dashboard.html");
+    });
+  </script>
+</body>
+</html>

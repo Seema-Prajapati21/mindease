@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/mindease
+
+logging:
+  level:
+    com.mindease: DEBUG
+    org.springframework.security: INFO
+    org.springframework.data.mongodb: INFO

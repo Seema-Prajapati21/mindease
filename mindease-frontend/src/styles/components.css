@@ -1,0 +1,291 @@
+/* Cards and containers */
+.me-card {
+  background: var(--me-card-bg);
+  border: 1px solid var(--me-border);
+  border-radius: var(--me-radius);
+  box-shadow: var(--me-shadow);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.me-card-soft {
+  background: #f7f3ec;
+  border: 1px solid var(--me-border);
+  border-radius: var(--me-radius);
+}
+
+.me-card:hover {
+  border-color: #d8cebf;
+}
+
+/* Primary and Gentle Buttons */
+.btn-me-primary {
+  background-color: var(--me-primary);
+  border-color: var(--me-primary);
+  color: #FFFFFF;
+  border-radius: var(--me-radius-sm);
+  padding: 0.6rem 1.4rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-me-primary:hover, .btn-me-primary:focus {
+  background-color: var(--me-primary-hover);
+  border-color: var(--me-primary-hover);
+  color: #FFFFFF;
+}
+
+.btn-me-outline {
+  background-color: transparent;
+  border: 1.5px solid var(--me-primary);
+  color: var(--me-primary);
+  border-radius: var(--me-radius-sm);
+  padding: 0.6rem 1.4rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-me-outline:hover {
+  background-color: var(--me-primary-light);
+  color: #556c54;
+  border-color: var(--me-primary);
+}
+
+.btn-me-subtle {
+  background-color: #f1ece3;
+  border: 1px solid var(--me-border);
+  color: var(--me-text);
+  border-radius: var(--me-radius-sm);
+  padding: 0.5rem 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-me-subtle:hover {
+  background-color: #e5dfd3;
+}
+
+/* Navbar */
+.me-navbar {
+  background-color: rgba(251, 248, 243, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--me-border);
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+/* Footer */
+.me-footer {
+  border-top: 1px solid var(--me-border);
+  background-color: #f5f0e6;
+  color: var(--me-muted);
+  font-size: 0.9rem;
+}
+
+/* Crisis Banner & Card (Gentle, non-alarming sage green) */
+.me-crisis-banner {
+  background-color: #e8efe7;
+  border-bottom: 1px solid #c9d8c8;
+  color: #3b523a;
+  font-size: 0.95rem;
+  padding: 0.65rem 1rem;
+}
+
+.me-crisis-card {
+  background: linear-gradient(135deg, #eef4ed 0%, #e6efe5 100%);
+  border: 1px solid #c9d8c8;
+  border-radius: var(--me-radius);
+  color: #2b3d2a;
+}
+
+/* SOS Floating Button */
+.me-sos-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: var(--me-accent);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 18px;
+  box-shadow: 0 4px 16px rgba(217, 165, 160, 0.4);
+  font-weight: 500;
+  z-index: 1030;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.me-sos-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217, 165, 160, 0.55);
+  color: #FFFFFF;
+}
+
+/* Emotion Grid */
+.emotion-tile {
+  background: #ffffff;
+  border: 2px solid var(--me-border);
+  border-radius: var(--me-radius);
+  padding: 1rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.emotion-tile:hover {
+  transform: translateY(-2px);
+  border-color: #ccc2b4;
+}
+
+.emotion-tile.selected {
+  border-color: var(--me-primary);
+  background-color: var(--me-primary-light);
+  box-shadow: 0 0 0 3px rgba(143, 166, 142, 0.25);
+}
+
+.emotion-tile.suggested {
+  box-shadow: 0 0 0 3px rgba(143, 166, 142, 0.45);
+  border-color: var(--me-primary);
+}
+
+/* Context Tag Pills */
+.context-pill {
+  border: 1px solid var(--me-border);
+  background-color: #f7f3eb;
+  color: var(--me-text);
+  border-radius: 20px;
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.context-pill:hover {
+  background-color: #ece5d8;
+}
+
+.context-pill.active {
+  background-color: var(--me-primary);
+  border-color: var(--me-primary);
+  color: #FFFFFF;
+}
+
+/* Breathing Circle */
+.breathing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 0;
+}
+
+.breathing-svg {
+  width: 240px;
+  height: 240px;
+}
+
+.breathing-circle-shape {
+  transform-origin: 50% 50%;
+  transition: transform 600ms ease, fill 600ms ease;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background-color: #f0ece3;
+  border: 1px solid rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #5c5c5c;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+.calendar-cell:hover {
+  transform: scale(1.06);
+  z-index: 2;
+}
+
+/* Range Slider */
+.me-slider {
+  width: 100%;
+  accent-color: var(--me-primary);
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Form controls */
+.form-control:focus, .form-select:focus {
+  border-color: var(--me-primary);
+  box-shadow: 0 0 0 0.2rem rgba(143, 166, 142, 0.25);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.history-card {
+  background: #ffffff;
+  border: 1px solid var(--me-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.85rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.history-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  background: transparent;
+  border-bottom: none;
+  padding: 0;
+}
+
+.date-badge {
+  font-size: 0.8rem;
+  color: var(--me-muted);
+  font-weight: 500;
+}
+
+.mood-badge {
+  font-size: 0.82rem;
+  background: var(--me-primary-light);
+  color: #2e442d;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.ai-summary {
+  font-size: 0.92rem;
+  color: var(--me-text);
+  margin-bottom: 0.35rem;
+  line-height: 1.45;
+}
+
+.journal-quote {
+  font-size: 0.85rem;
+  color: #717171;
+  font-style: italic;
+  margin-bottom: 0;
+  border-left: 2.5px solid var(--me-primary);
+  padding-left: 0.65rem;
+}
+

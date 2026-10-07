@@ -1,0 +1,8 @@
+
+tools/
+
+mindease-frontend/node_modules/
+
+mindease-backend/target/
+
+mindease-frontend/dist/

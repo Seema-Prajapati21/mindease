@@ -1,0 +1,37 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: mindease-backend
+  profiles:
+    active: dev
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/mindease
+      auto-index-creation: true
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY:}
+
+mindease:
+  jwt:
+    # 256-bit secret key for HMAC-SHA256
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration-ms: 86400000 # 24 hours
+  cors:
+    allowed-origins:
+      - "http://localhost:5173"
+      - "http://localhost:3000"
+      - "http://127.0.0.1:5173"
+  ai:
+    enabled: false
+    api-key: ""
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
