@@ -5,10 +5,11 @@ spring:
   application:
     name: mindease-backend
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/mindease
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://127.0.0.1:27017/mindease}
+      database: ${SPRING_DATA_MONGODB_DATABASE:}
       auto-index-creation: true
 
 gemini:

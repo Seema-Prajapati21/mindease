@@ -1,7 +1,8 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/mindease
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://127.0.0.1:27017/mindease}
+      database: ${SPRING_DATA_MONGODB_DATABASE:}
 
 logging:
   level:
