@@ -36,5 +36,5 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-# Dynamically bind to $PORT provided by Render (falls back to 8080 if PORT is not set)
-ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -Dserver.port=${PORT:-8080} -jar /app/app.jar"]
+# Dynamically bind to $PORT provided by Render and forward MongoDB URI and profile system properties if present
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -Dserver.port=${PORT:-8080} ${SPRING_DATA_MONGODB_URI:+-Dspring.data.mongodb.uri=\"$SPRING_DATA_MONGODB_URI\"} ${SPRING_PROFILES_ACTIVE:+-Dspring.profiles.active=\"$SPRING_PROFILES_ACTIVE\"} -jar /app/app.jar"]
