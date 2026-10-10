@@ -78,22 +78,25 @@ const Dashboard = () => {
     loadDashboardData();
   }, [user]);
 
+ 
   // Demo seeder caller
   const seedDemoData = async () => {
     let email = user?.email;
+
     try {
       const stored = JSON.parse(localStorage.getItem('currentUser') || 'null');
       if (stored?.email) email = stored.email;
     } catch (e) {}
 
-    if (!email) return;
+    if (!email) {
+      console.error('No user email found.');
+      return;
+    }
 
     setSeeding(true);
+
     try {
-      const res = await fetch(`/api/mood/demo-seed?email=${encodeURIComponent(email)}`, {
-        method: 'POST',
-      });
-      await res.json();
+      await moodApi.seedDemoHistory(email);
       await loadDashboardData();
     } catch (err) {
       console.error('Error seeding demo data:', err);
