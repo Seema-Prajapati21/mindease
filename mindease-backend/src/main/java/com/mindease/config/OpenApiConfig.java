@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 public class OpenApiConfig {
@@ -21,6 +22,9 @@ public class OpenApiConfig {
                         .version("1.0.0")
                         .description("Data with a heartbeat — REST API for MindEase mood tracking and wellness companion.")
                         .contact(new Contact().name("MindEase Care").email("support@mindease.care")))
+                .servers(java.util.List.of(
+                      new Server().url("https://mindease-production-117f.up.railway.app")
+                ))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName,
