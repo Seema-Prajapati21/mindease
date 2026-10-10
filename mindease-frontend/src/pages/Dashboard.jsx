@@ -134,7 +134,7 @@ const Dashboard = () => {
     return Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0] || 'None';
   };
 
-  const streak = calculateStreak(logs);
+  const streak = stats?.streak ?? calculateStreak(logs);
   const dominantMood = calculateDominantMood(logs);
   const avgIntensity =
     logs && logs.length > 0
