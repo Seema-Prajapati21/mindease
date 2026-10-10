@@ -78,4 +78,49 @@ public class MoodService {
     public List<MoodEntry> getUserEntriesBetween(String userId, String startDate, String endDate) {
         return moodEntryRepository.findByUserIdAndDateBetweenOrderByDateAsc(userId, startDate, endDate);
     }
+    
+    public int seedDemoHistory(String userEmail) {
+        User user = authService.getMe(userEmail);
+        LocalDate today = LocalDate.now();
+        int created = 0;
+
+        String[] emotions = {
+                "calm", "hopeful", "happy", "neutral",
+                "grateful", "anxious", "calm"
+        };
+
+        String[] bodyFeels = {
+                "light", "restless", "light", "tense",
+                "light", "restless", "light"
+        };
+
+        int[] intensities = {6, 7, 8, 5, 9, 4, 7};
+
+        for (int i = 6; i >= 0; i--) {
+            String date = today.minusDays(i).toString();
+
+            if (moodEntryRepository.findByUserIdAndDate(user.getId(), date).isPresent()) {
+                continue;
+            }
+
+            MoodEntry entry = new MoodEntry();
+            entry.setUserId(user.getId());
+            entry.setDate(date);
+            entry.setCreatedAt(Instant.now());
+            entry.setBodyFeel(bodyFeels[6 - i]);
+            entry.setMindText("Sample demo reflection for dashboard preview.");
+            entry.setEmotion(emotions[6 - i]);
+            entry.setSuggestedEmotion(emotions[6 - i]);
+            entry.setIntensity(intensities[6 - i]);
+            entry.setTags(List.of("demo"));
+            entry.setJournalNote("Demo entry — created for preview.");
+            entry.setWasOverridden(false);
+
+            moodEntryRepository.save(entry);
+            created++;
+        }
+
+        return created;
+    }
+
 }
