@@ -39,4 +39,12 @@ export const moodApi = {
     const res = await axiosClient.get('/mood/history', { params: { email } });
     return res.data;
   },
+  
+  seedDemoHistory: async (email) => {
+    const res = await axiosClient.post('/mood/demo-seed', null, {
+      params: { email },
+    });
+    return res.data;
+  },
+
 };
