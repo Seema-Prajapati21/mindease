@@ -42,7 +42,7 @@ const Landing = () => {
 
             {/* Soft minimal organic illustration */}
             <div className="py-3 d-flex justify-content-center">
-              <svg width="280" height="120" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="280" height="80" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="80" cy="60" r="45" fill="#8FA68E" fillOpacity="0.15" />
                 <circle cx="140" cy="50" r="55" fill="#F4C95D" fillOpacity="0.15" />
                 <circle cx="200" cy="65" r="45" fill="#D9A5A0" fillOpacity="0.2" />
