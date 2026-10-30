@@ -1,7 +1,10 @@
 package com.mindease.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class SignupRequest {
@@ -17,6 +20,9 @@ public class SignupRequest {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
+    @NotNull(message = "Age must be between 13 and 80")
+    @Min(value = 13, message = "Age must be between 13 and 80")
+    @Max(value = 80, message = "Age must be between 13 and 80")
     private Integer age;
     private String ageGroup;
     private String profession;

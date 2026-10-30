@@ -39,8 +39,17 @@ public class AuthService {
     }
 
     public AuthResponse signup(SignupRequest request) {
+        if (request.getAge() == null || request.getAge() < 13 || request.getAge() > 80) {
+            throw new IllegalArgumentException("Age must be between 13 and 80");
+        }
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("EMAIL_EXISTS");
+        }
+
+        String ageGroup = request.getAgeGroup();
+        if (ageGroup == null || ageGroup.isBlank()) {
+            ageGroup = deriveAgeGroup(request.getAge());
         }
 
         User user = new User(
@@ -49,7 +58,7 @@ public class AuthService {
                 passwordEncoder.encode(request.getPassword())
         );
         user.setAge(request.getAge());
-        user.setAgeGroup(request.getAgeGroup());
+        user.setAgeGroup(ageGroup);
         user.setProfession(request.getProfession());
 
         User savedUser = userRepository.save(user);
@@ -113,5 +122,13 @@ public class AuthService {
         User user = getMe(email);
         moodEntryRepository.deleteByUserId(user.getId());
         userRepository.delete(user);
+    }
+
+    private String deriveAgeGroup(int age) {
+        if (age < 13) return "child";
+        if (age <= 17) return "teen";
+        if (age <= 25) return "young_adult";
+        if (age <= 59) return "adult";
+        return "senior";
     }
 }

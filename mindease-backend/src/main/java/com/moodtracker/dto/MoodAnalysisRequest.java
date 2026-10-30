@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Min;
 import java.util.List;
 
 public class MoodAnalysisRequest {
-    @Min(value = 13, message = "Age must be at least 13")
-    @Max(value = 120, message = "Age must be under 120")
+    @Min(value = 13, message = "Age must be between 13 and 80")
+    @Max(value = 80, message = "Age must be between 13 and 80")
     private int age;
     private String profession;
     private String ageGroup;
