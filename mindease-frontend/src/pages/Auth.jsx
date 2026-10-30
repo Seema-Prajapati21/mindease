@@ -199,12 +199,12 @@ const Auth = () => {
 
                   <div className="row g-2 mb-3">
                     <div className="col-5">
-                      <label className="form-label small text-muted">Age (13–120)</label>
+                      <label className="form-label small text-muted">Age (13–80)</label>
                       <input
                         type="number"
                         name="age"
                         min="13"
-                        max="120"
+                        max="80"
                         className="form-control py-2"
                         placeholder="e.g. 19"
                         value={formData.age}
