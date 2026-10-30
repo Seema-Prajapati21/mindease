@@ -53,8 +53,8 @@ const Auth = () => {
         return;
       }
       const ageNum = parseInt(formData.age, 10);
-      if (isNaN(ageNum) || ageNum < 13 || ageNum > 120) {
-        setErrorMsg('Age must be between 13 and 120.');
+      if (isNaN(ageNum) || ageNum < 13 || ageNum > 80) {
+        setErrorMsg('Age must be between 13 and 80.');
         return;
       }
       if (!formData.profession.trim()) {
