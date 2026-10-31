@@ -6,3 +6,7 @@ mindease-frontend/node_modules/
 mindease-backend/target/
 
 mindease-frontend/dist/
+# Local environment variables
+.env
+.env.*
+!.env.example

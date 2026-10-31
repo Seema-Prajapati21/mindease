@@ -7,10 +7,11 @@ import { getTodayDateString } from '../utils/dateHelpers';
 
 // Default baseline questions for instant preview / offline fallback
 const DEFAULT_QUESTIONS = [
+  
   {
     id: 'q_body_01',
     category: 'body',
-    categoryLabel: 'Body Category',
+    categoryLabel: 'Body',
     question: 'What’s your energy battery at right now?',
     options: [
       { id: 'q_body_01_opt1', label: '80–100% — fully charged' },
@@ -23,26 +24,65 @@ const DEFAULT_QUESTIONS = [
   {
     id: 'q_mind_01',
     category: 'mind',
-    categoryLabel: 'Mind Category',
+    categoryLabel: 'Mind',
     question: 'What’s the tempo of your thoughts?',
     options: [
-      { id: 'q_mind_01_opt1', label: 'Smooth, quiet, and clear' },
-      { id: 'q_mind_01_opt2', label: 'Racing at 100 mph' },
-      { id: 'q_mind_01_opt3', label: 'Looping over the same worry' },
-      { id: 'q_mind_01_opt4', label: 'Foggy, blank, and slow' },
+      { id: 'q_mind_01_opt1', label: 'smooth, quiet, and clear' },
+      { id: 'q_mind_01_opt2', label: 'racing at 100 mph' },
+      { id: 'q_mind_01_opt3', label: 'looping over the same worry' },
+      { id: 'q_mind_01_opt4', label: 'foggy, blank, and slow' },
       { id: 'skip', label: 'Skip / Not sure' },
     ],
   },
   {
     id: 'q_met_01',
     category: 'metaphor',
-    categoryLabel: 'Metaphor / Social / Needs / Self Category',
+    categoryLabel: 'Metaphor',
     question: 'If today were weather, what would it be?',
     options: [
       { id: 'q_met_01_opt1', label: 'Clear bright sunshine' },
       { id: 'q_met_01_opt2', label: 'Gentle autumn breeze' },
       { id: 'q_met_01_opt3', label: 'Overcast and foggy' },
       { id: 'q_met_01_opt4', label: 'Passing thunderstorm' },
+      { id: 'skip', label: 'Skip / Not sure' },
+    ],
+  },
+  {
+    id: 'q_sensory_01',
+    category: 'sensory',
+    categoryLabel: 'Sensory',
+    question: 'How does the world around you feel right now?',
+    options: [
+      { id: 'q_sensory_01_opt1', label: 'Comfortable and pleasant' },
+      { id: 'q_sensory_01_opt2', label: 'A little overwhelming' },
+      { id: 'q_sensory_01_opt3', label: 'Too loud or intense' },
+      { id: 'q_sensory_01_opt4', label: 'Distant or disconnected' },
+      { id: 'skip', label: 'Skip / Not sure' },
+    ],
+  },
+  {
+    id: 'q_coping_01',
+    category: 'coping',
+    categoryLabel: 'Coping',
+    question: 'What would help you most right now?',
+    options: [
+      { id: 'q_coping_01_opt1', label: 'Some rest and quiet' },
+      { id: 'q_coping_01_opt2', label: 'Talking to someone' },
+      { id: 'q_coping_01_opt3', label: 'A little movement or fresh air' },
+      { id: 'q_coping_01_opt4', label: 'Time alone to process things' },
+      { id: 'skip', label: 'Skip / Not sure' },
+    ],
+  },
+  {
+    id: 'q_outlook_01',
+    category: 'outlook',
+    categoryLabel: 'Outlook',
+    question: 'How are you feeling about what lies ahead?',
+    options: [
+      { id: 'q_outlook_01_opt1', label: 'Hopeful and positive' },
+      { id: 'q_outlook_01_opt2', label: 'Taking things one step at a time' },
+      { id: 'q_outlook_01_opt3', label: 'Uncertain or worried' },
+      { id: 'q_outlook_01_opt4', label: 'Not ready to think about it' },
       { id: 'skip', label: 'Skip / Not sure' },
     ],
   },
@@ -94,13 +134,8 @@ const LogMood = () => {
   // 7: Completion Screen
   const [currentStep, setCurrentStep] = useState(1);
 
-  // Selected options: stores { optionId, label } for index 0, 1, 2
-  const [answers, setAnswers] = useState({
-    0: null,
-    1: null,
-    2: null,
-  });
-
+ // Selected options: stores { optionId, label } for each question index
+const [answers, setAnswers] = useState({});
   // Micro-journal text (max 200 chars)
   const [journalText, setJournalText] = useState('');
 
@@ -135,7 +170,7 @@ const LogMood = () => {
 
     try {
       const fetched = await moodApi.getQuestions(userProfile.ageGroup || 'young_adult', lastSeenIds);
-      if (Array.isArray(fetched) && fetched.length === 3) {
+      if (Array.isArray(fetched) && fetched.length === 6) {
         // Format questions with category labels and ensure skip option is present
         const formatted = fetched.map((q) => {
           let catLabel = 'Question Category';
@@ -187,7 +222,7 @@ const LogMood = () => {
 
   // Step 4 -> 5: Trigger AI Mood Detection
   const triggerAiDetection = async () => {
-    setCurrentStep(5);
+    setCurrentStep(8);
     setIsAnalyzing(true);
 
     const answersDtoList = questions.map((q, idx) => {
@@ -224,10 +259,11 @@ const LogMood = () => {
     } catch (err) {
       console.warn('API analysis fallback triggered:', err.message);
       // Local heuristic fallback
-      const q0 = answers[0]?.label || '';
-      const q1 = answers[1]?.label || '';
-      const q2 = answers[2]?.label || '';
-      const text = journalText.toLowerCase();
+      const allAnswers = Object.values(answers)
+  .map((answer) => answer?.label || '')
+  .join(' ')
+  .toLowerCase();
+  const text = journalText.tolowerCase();
 
       let mood = 'Calm';
       let summary = 'There is a steady stillness in your rhythm right now. Moments like this offer space to ground and recharge.';
@@ -237,14 +273,14 @@ const LogMood = () => {
       ];
 
       if (
-        q0.includes('shut down') ||
-        q0.includes('running on low') ||
-        q1.includes('Racing') ||
-        q2.includes('thunderstorm') ||
+        allAnswers.includes('shut down') ||
+        allAnswers.includes('running on low') ||
+        allAnswers.includes('racing') ||
+        allAnswers.includes('thunderstorm') ||
         text.includes('overwhelmed') ||
         text.includes('too much')
       ) {
-        if (q1.includes('Racing') || q2.includes('thunderstorm') || text.includes('stress')) {
+        if (allAnswers.includes('racing') || allAnswers.includes('thunderstorm') || text.includes('stress')) {
           mood = 'Overwhelmed';
           summary = 'It looks like your thoughts are running faster than your energy can keep up today. Giving yourself permission to pause can bring some quiet relief.';
           suggestions = [
@@ -252,28 +288,28 @@ const LogMood = () => {
             'Pick just one small priority for today; let the rest wait.',
           ];
         } else {
-          mood = 'Exhausted';
+          mood = 'exhausted';
           summary = 'Your system is gently signaling that it has carried a heavy load today. Deep rest without guilt is what you deserve tonight.';
           suggestions = [
             'Dim the lights and sip some warm water or soothing tea.',
             'Allow non-urgent tasks to roll over into tomorrow.',
           ];
         }
-      } else if (q1.includes('Looping') || q1.includes('Racing') || text.includes('worry') || text.includes('anxious')) {
+      } else if (allAnswers.includes('looping') || allAnswers.includes('racing') || text.includes('worry') || text.includes('anxious')) {
         mood = 'Anxious';
         summary = 'Your mind seems to be holding tight to worries that want your attention. A few slow, extended exhales can signal safety to your nervous system.';
         suggestions = [
           'Try the 4-7-8 breathing circle for 2 minutes to calm physical tension.',
           'Write down the worries on paper to get them out of your head.',
         ];
-      } else if (q1.includes('Foggy') || q2.includes('Overcast') || text.includes('sad') || text.includes('lonely')) {
+      } else if (allAnswers.includes('foggy') || allAnswers.includes('overcast') || text.includes('sad') || text.includes('lonely')) {
         mood = 'Sad';
         summary = 'Today carried some gray skies and quiet weight. It is completely okay to move at a slower tempo and treat yourself with extra gentleness.';
         suggestions = [
           'Wrap yourself in a comfortable blanket and allow yourself to simply be.',
           'Reach out to someone who makes you feel safe, or listen to familiar music.',
         ];
-      } else if (q0.includes('80–100%') || q2.includes('sunshine') || text.includes('happy') || text.includes('great')) {
+      } else if (allAnswers.includes('80–100%') || allAnswers.includes('sunshine') || text.includes('happy') || text.includes('great')) {
         mood = 'Happy';
         summary = 'A vibrant lightness is present in your day today. Celebrate the warmth and carry this buoyant energy forward.';
         suggestions = [
@@ -296,7 +332,7 @@ const LogMood = () => {
   const handleConfirmDetected = () => {
     setWasDetectionAccurate(true);
     setIsManualSelecting(false);
-    setCurrentStep(6);
+    setCurrentStep(9);
   };
 
   // Step 5: User overrides detected mood
@@ -304,7 +340,7 @@ const LogMood = () => {
     setFinalMood(moodLabel);
     setWasDetectionAccurate(false);
     setIsManualSelecting(false);
-    setCurrentStep(6);
+    setCurrentStep(9);
   };
 
   const handleCustomMoodSubmit = (e) => {
@@ -313,24 +349,21 @@ const LogMood = () => {
       setFinalMood(customMoodInput.trim());
       setWasDetectionAccurate(false);
       setIsManualSelecting(false);
-      setCurrentStep(6);
+      setCurrentStep(9);
     }
   };
 
-  // Step 6 -> Step 7: Persist Check-In
+  // Step 9 -> Step 10: Persist Check-In
   const handleFinishCheckin = async () => {
-    setCurrentStep(7);
+    setCurrentStep(10);
 
     // Save the 3 question IDs to localStorage
     const questionIds = questions.map((q) => q.id);
     localStorage.setItem('lastSeenQuestionIds', JSON.stringify(questionIds));
 
-    const answerLabels = [
-      answers[0]?.label || 'Skip / Not sure',
-      answers[1]?.label || 'Skip / Not sure',
-      answers[2]?.label || 'Skip / Not sure',
-    ];
-
+    const answerLabels = questions.map(
+  (_, index) => answers[index]?.label || 'Skip / Not sure'
+);
     const userEmail = currentUser.email || user?.email || 'user@example.com';
 
     // Build payload matching com.moodtracker.model.MoodEntry
@@ -395,12 +428,12 @@ const LogMood = () => {
     }
     abortControllerRef.current = new AbortController();
 
-    setAnswers({ 0: null, 1: null, 2: null });
+    setAnswers({});
     setJournalText('');
     setCustomMoodInput('');
     setIsManualSelecting(false);
     setIntensity(5);
-    setConfirmedMood('Calm');
+    setFinalMood('Calm');
     setDetectedMood('Calm');
     setWasDetectionAccurate(true);
     setCurrentStep(1);
@@ -415,16 +448,16 @@ const LogMood = () => {
       <div className="row justify-content-center">
         <div className="col-12 col-md-9 col-lg-7">
 
-          {/* Progress Indicator (Steps 1 to 6) */}
-          {currentStep < 7 && (
-            <div className="mb-4">
-              <div className="d-flex justify-content-between align-items-center mb-1">
-                <span className="small text-muted">
-                  {currentStep <= 3 && `Question ${currentStep} of 3`}
-                  {currentStep === 4 && 'Reflect (Optional)'}
-                  {currentStep === 5 && 'Mood Discovery'}
-                  {currentStep === 6 && 'Intensity'}
-                </span>
+          {/* Progress Indicator (Steps 1 to 9) */}
+{currentStep < 10 && (
+  <div className="mb-4">
+    <div className="d-flex justify-content-between align-items-center mb-1">
+      <span className="small text-muted">
+        {currentStep <= 6 && `Question ${currentStep} of 6`}
+        {currentStep === 7 && 'Reflect (Optional)'}
+        {currentStep === 8 && 'Mood Discovery'}
+        {currentStep === 9 && 'Intensity'}
+      </span>
                 <span className="small text-muted">Check-In Wizard</span>
               </div>
               <div className="progress" style={{ height: '6px', backgroundColor: '#EDE7DD' }}>
@@ -432,11 +465,11 @@ const LogMood = () => {
                   className="progress-bar"
                   role="progressbar"
                   style={{
-                    width: `${(currentStep / 6) * 100}%`,
+                    width: `${(currentStep / 9) * 100}%`,
                     backgroundColor: 'var(--me-primary)',
                     transition: 'width 0.4s ease',
                   }}
-                  aria-valuenow={(currentStep / 6) * 100}
+                  aria-valuenow={(currentStep / 9) * 100}
                   aria-valuemin="0"
                   aria-valuemax="100"
                 />
@@ -447,7 +480,7 @@ const LogMood = () => {
           {/* =========================================================================
               PART B.1: Exactly 3 Questions per Check-In (Steps 1, 2, 3)
              ========================================================================= */}
-          {currentStep >= 1 && currentStep <= 3 && (
+          {currentStep >= 1 && currentStep <= 6 && (
             <div className="me-card p-4 p-md-5 fade-in">
               <span
                 className="badge mb-2 px-3 py-1"
@@ -520,91 +553,69 @@ const LogMood = () => {
                   className="btn btn-me-primary px-4"
                   disabled={!answers[currentStep - 1]}
                   onClick={() => {
-                    if (currentStep < 3) {
-                      setCurrentStep((prev) => prev + 1);
-                    } else {
-                      setCurrentStep(4);
-                    }
+                    if (currentStep < 6) {
+  setCurrentStep((prev) => prev + 1);
+} else {
+  setCurrentStep(7);
+}
                   }}
                 >
-                  {currentStep === 3 ? 'Continue to Note →' : 'Next Question →'}
+                  {currentStep === 6 ? 'Continue to Note →' : 'Next Question →'}
                 </button>
               </div>
             </div>
           )}
 
-          {/* =========================================================================
-              PART B.2: Optional Micro-Journal Box (Step 4, max 200 characters)
-             ========================================================================= */}
-          {currentStep === 4 && (
-            <div className="me-card p-4 p-md-5 fade-in">
-              <span
-                className="badge mb-2 px-3 py-1"
-                style={{ backgroundColor: 'var(--me-primary-light)', color: '#3b523a', fontSize: '0.8rem' }}
-              >
-                Micro-Journal
-              </span>
+          {/* PART B.2: Optional Journal Screen (Step 7) */}
+{currentStep === 7 && (
+  <div className="me-card p-4 p-md-5 fade-in">
+    <div className="text-center mb-4">
+      <span style={{ fontSize: '2.5rem' }}>📝</span>
+      <h2 className="serif h3 mt-2" style={{ color: 'var(--me-text)' }}>
+        Anything on your mind?
+      </h2>
+      <p className="text-muted">
+        Add a little context to your check-in. This is completely optional.
+      </p>
+    </div>
 
-              <h2 className="serif h3 mb-2" style={{ color: 'var(--me-text)' }}>
-                Anything else on your mind today?
-              </h2>
-              <p className="text-muted small mb-4">
-                Optional, maximum 200 characters.
-              </p>
+    <textarea
+      className="form-control mb-2"
+      rows="5"
+      maxLength={200}
+      placeholder="Write whatever feels right..."
+      value={journalText}
+      onChange={(e) => setJournalText(e.target.value)}
+    />
 
-              <div className="mb-4">
-                <textarea
-                  className="form-control p-3"
-                  rows="4"
-                  maxLength={200}
-                  placeholder="Just a few words about what is resting on your chest or mind..."
-                  value={journalText}
-                  onChange={(e) => setJournalText(e.target.value)}
-                  style={{ borderRadius: '12px', resize: 'none' }}
-                />
-                <div className="d-flex justify-content-between align-items-center mt-2 small text-muted">
-                  <span>🔒 Private & confidential</span>
-                  <span className={journalText.length >= 190 ? 'text-warning fw-bold' : ''}>
-                    {journalText.length}/200
-                  </span>
-                </div>
-              </div>
+    <div className="text-end small text-muted mb-4">
+      {journalText.length}/200 characters
+    </div>
 
-              <div className="d-flex justify-content-between align-items-center pt-2 border-top">
-                <button
-                  type="button"
-                  className="btn btn-link text-muted text-decoration-none px-0"
-                  onClick={() => setCurrentStep(3)}
-                >
-                  ← Back
-                </button>
+    <div className="d-flex justify-content-between align-items-center pt-3 border-top">
+      <button
+        type="button"
+        className="btn btn-link text-muted text-decoration-none px-0"
+        onClick={() => setCurrentStep(6)}
+      >
+        ← Back
+      </button>
 
-                <div className="d-flex gap-2">
-                  {!journalText && (
-                    <button
-                      type="button"
-                      className="btn btn-me-subtle px-3"
-                      onClick={triggerAiDetection}
-                    >
-                      Skip Note
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    className="btn btn-me-primary px-4"
-                    onClick={triggerAiDetection}
-                  >
-                    Analyze Mood →
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+      <button
+        type="button"
+        className="btn btn-me-primary px-4"
+        onClick={triggerAiDetection}
+      >
+        {journalText.trim() ? 'Analyze Mood →' : 'Skip & Analyze Mood →'}
+      </button>
+    </div>
+  </div>
+)}
 
           {/* =========================================================================
               PART B.3: AI Mood Detection & Confirmation Screen (Step 5)
              ========================================================================= */}
-          {currentStep === 5 && (
+          {currentStep === 8 && (
             <div className="me-card p-4 p-md-5 fade-in">
               {isAnalyzing ? (
                 <div className="py-5 text-center fade-in">
@@ -729,7 +740,7 @@ const LogMood = () => {
           {/* =========================================================================
               PART B.4: Dynamic 1–10 Intensity Slider (Step 6)
              ========================================================================= */}
-          {currentStep === 6 && (
+          {currentStep === 9 && (
             <div className="me-card p-4 p-md-5 fade-in">
               <span
                 className="badge mb-2 px-3 py-1"
@@ -793,7 +804,7 @@ const LogMood = () => {
                 <button
                   type="button"
                   className="btn btn-link text-muted text-decoration-none px-0"
-                  onClick={() => setCurrentStep(5)}
+                  onClick={() => setCurrentStep(8)}
                 >
                   ← Back
                 </button>
@@ -811,7 +822,7 @@ const LogMood = () => {
           {/* =========================================================================
               PART B.5: Completion Screen (Step 7)
              ========================================================================= */}
-          {currentStep === 7 && (
+          {currentStep === 10 && (
             <div className="me-card p-4 p-md-5 text-center fade-in">
               <div style={{ fontSize: '3.5rem' }} className="mb-3">
                 🌿
